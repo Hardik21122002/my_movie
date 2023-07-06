@@ -27,7 +27,6 @@
     <%= f.collection_select :slot_ids, Slot.all, :id, :start_time_and_end_time,{ prompt: true  },{id: 'slot-select' , multiple: true} %><br><br>
   </div> 
 
-
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name %><br><br> 
