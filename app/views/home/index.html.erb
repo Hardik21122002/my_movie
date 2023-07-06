@@ -1,0 +1,45 @@
+<% if user_signed_in? %>
+ <% case current_user.role %>
+  <% when 'user' %>
+    <h2 align="center">Welcome user: <%= current_user.email %> </h2>  
+    <h2>Shows For This Week </h2>
+    <table> 
+      <thead>
+        <tr> 
+          <th>Show Name</th>
+          <th>Screen Name</th>  
+          <th>Theater Name</th>  
+          <th>Total Seats</th>  
+          <th>Remaining Seats</th> 
+          <th>Duration</th> 
+          <th>Start Date</th> 
+          <th>Time</th>
+          <th>Recurring</th>   
+          <th>End Date</th>  
+        </tr>
+      </thead>
+      <tbody> 
+        <% @shows.each do |show| %>
+          <tr> 
+            <td><%= show.name %></td> 
+            <td><%= show.screen.screen_name %></td>   
+            <td><%= show.theater.name %></td>  
+            <td><%= show.total_seats %></td>  
+            <td><%= show.remaining_seats %></td> 
+            <td><%= show.duration.strftime("%H:%M") %></td>  
+            <td><%= show.start_date %></td>  
+            <td>
+              <% show.show_times.each do |show_time| %>
+                <%= show_time.time&.strftime("%I:%M %p")%><br>
+              <% end %>
+            </td>
+            <td><%= show.recurring %></td>  
+            <td><%= show.end_date %></td>  
+          </tr>
+        <% end %> 
+      </tbody> 
+    </table>
+
+  <% end %>  
+<% end %>
+

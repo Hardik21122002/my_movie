@@ -1,0 +1,18 @@
+<h2 align="center"> Welcome admin: <%= current_user.email %> </h2>
+<h4>Theaters</h4>
+
+<table> 
+  <thead>
+    <tr> 
+      <th>Theater Name</th> 
+    </tr>
+  </thead>
+  <tbody>
+    <% @theaters.each do |theater| %>
+      <tr> 
+        <td><%= link_to theater.name, theater_path(theater.id) %></td>    
+      </tr>
+    <% end %>
+  </tbody>
+</table><br> 
+<%= link_to 'Sign out', destroy_user_session_path, method: :delete%>

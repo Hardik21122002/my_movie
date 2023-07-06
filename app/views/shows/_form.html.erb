@@ -1,0 +1,158 @@
+<div class="Show">
+<%= form_for @show do |f| %> 
+  <% if @show.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@show.errors.count, "error") %> prohibited this show from being saved:</h2>
+      <ul>
+        <% @show.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>   
+
+  <div class="field">
+    <%# <%= f.label :theater %> 
+    <%# <%= f.text_field :theater_name, value: @theater.name, readonly: true %> 
+    <%= f.hidden_field :theater_id, value: @theater&.id %><br><br>
+  </div>
+
+  <div class="field">
+    <%= f.label :screen %>
+    <%= f.collection_select :screen_id, @screens, :id, :screen_name, {prompt: true }, { id: 'screen-select'}%><br><br>
+  </div>  
+
+  <div class="field">
+    <%= f.label :screen_slot %>
+    <%= f.collection_select :slot_ids, Slot.all, :id, :start_time_and_end_time,{ prompt: true  },{id: 'slot-select' , multiple: true} %><br><br>
+  </div> 
+
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %><br><br> 
+  </div>   
+
+  <div class="field">
+    <%= f.label :Total_Seat %>
+    <%= f.number_field :total_seats ,min: 1%><br><br> 
+  </div>    
+
+  <div class="field">
+    <%= f.label :duration %>
+    <%= f.time_select :duration%><br><br> 
+  </div>    
+         
+  <div class="field">
+    <%= f.label :start_date %>
+    <%= f.date_field :start_date %><br><br>
+  </div> 
+  
+  <div id="time-slots-container">  
+  <%# , f.object.show_times %>
+  <%= f.fields_for :show_times do |show_times_form| %> 
+    <div class="field">
+      <%= show_times_form.label :time %>
+      <%= show_times_form.time_select :time ,class: "time-slot-input"%><br><br> 
+    </div>   
+  <% end %>  
+  </div> 
+  
+  <button type="button" id="add-time-slot-btn" onclick="addTimeSlot()">Add Time Slot</button><br><br>
+
+  <div class="field">
+    <%= f.label :recurring %>
+    <%= f.check_box :recurring ,id: 'show_recurring'%><br><br> 
+  </div>  
+
+  <div id="card_details" style="display: none;">
+    <%= f.label :end_date %>
+    <%= f.date_field :end_date %><br><br> 
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %><br> 
+<%= link_to 'Back to Shows', shows_path %>
+</div>
+
+<script type="text/javascript">
+  var checkbox = document.getElementById('show_recurring');
+  var details_div = document.getElementById('card_details');
+
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      details_div.style.display = 'block';
+    } else {
+      details_div.style.display = 'none';
+    }
+  });
+</script>
+
+<script> 
+  var index = 0;
+  function addTimeSlot() {
+    index++;
+    // Create a new time slot input field
+    var inputField = document.createElement('div');
+    inputField.className = 'field';
+    inputField.innerHTML = '<label>Time</label>' +
+      '<input type="time" name="show[show_times_attributes]['+index+'][time]" class="time-slot-input">';
+    
+    // Append the new input field to the container
+    var timeSlotsContainer = document.getElementById('time-slots-container');
+    timeSlotsContainer.appendChild(inputField);  
+
+  } 
+  
+</script> 
+
+<script> 
+$(document).ready(function() {
+    $(document).on('change', '#screen-select', function() {
+      var screenId = $(this).val();
+      console.log("selected-screen", screenId);
+      $.ajax({
+        url: '/screen_slots/',
+        data: {screen_id: screenId },
+        success: function(data) {
+          try{
+            var slotDropdown = $('#slot-select');
+            slotDropdown.empty();
+            slotDropdown.append($('<option>', {
+              value: '',
+              text: 'Select slot'
+            }));
+            $.each(data, function(index, slot) {
+              var startTime = formatTime(slot.start_time);
+              var endTime = formatTime(slot.end_time);
+              var optionText = startTime + ' - ' + endTime;
+              slotDropdown.append($('<option>', {
+                value: slot.id,
+                text: optionText
+              }));
+            });
+          } catch (error) {
+            console.error('Error processing response:', error);
+          }
+        },
+        error: function(xhr, status, error) {
+         console.error('AJAX request error:', error);
+        }
+      });
+    });
+  });
+
+
+  function formatTime(dateTime) {
+    var time = dateTime.split('T')[1].slice(0, 5);
+    var hours = parseInt(time.split(':')[0]);
+    var minutes = time.split(':')[1];
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    var formattedTime = hours + ':' + minutes + ' ' + ampm;
+    return formattedTime;
+  }
+</script>  

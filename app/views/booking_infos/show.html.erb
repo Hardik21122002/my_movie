@@ -1,0 +1,11 @@
+<h1> BookingInfo Details </h1> 
+<div class="BookingInfo">
+
+<p><strong>Theater Name:</strong><%= @booking_info.theater.name %></p> 
+<p><strong>Screen Name:</strong> <%= @booking_info.screen.screen_name %></p> 
+<p><strong>Show Name:</strong><%= @booking_info.show.name %></p>
+<p><strong>Booking Date:</strong> <%= @booking_info.booking_date %></p>   
+<p><strong>Booking Time:</strong> <%= @booking_info.booking_time %></p>  
+<p><strong>User Email:</strong> <%= @booking_info.user.email %></p>
+<%= link_to 'Back to BookingInfos', booking_infos_path %>
+</div>

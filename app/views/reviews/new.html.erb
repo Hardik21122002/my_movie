@@ -1,0 +1,83 @@
+<h1>Review </h1> 
+<div class="review-form">
+ <%= form_for @review do |f| %>
+  <% if @review.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@review.errors.count, "error") %> prohibited this review from being saved:</h2>
+
+      <ul>
+        <% @review.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %> 
+
+  <div class="field">  
+    <%= f.label :theater%> :- 
+    <%# <%= f.text_field :theater, value: @review.theater&.name, readonly: true %> 
+    <%= f.label :theater, @review.theater&.name %><br><br> 
+  </div> 
+
+  <div class="field">  
+    <%= f.label :show %> :- 
+    <%# <%= f.text_field :show, value:@review.show&.name, readonly: true %> 
+    <%= f.label :show, @review.show&.name %><br><br>
+  </div>
+
+  <div class="field">
+    <%= f.label :rating %>
+    <div class="rating">
+      <%= f.collection_radio_buttons(:rating, [[5],[4],[3],[2],[1]], :first, :last) do |star| %>
+        <%= star.radio_button %>
+        <%= star.label(class: "text-white") %>
+      <% end %>
+    </div>
+  </div><br> 
+
+  <div class="field">
+    <%= f.label :feedback %> 
+    <%= f.text_field :feedback%><br>
+  </div> 
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %><br>  
+
+<%= link_to ' Back to Reviews',  reviews_path %> 
+</div> 
+
+<%# <script>
+  $(document).ready(function() {
+  $('#theater-select').on('change', function() {
+    var theaterId = $(this).val();
+    console.log("selected-theater", theaterId);
+    $.ajax({
+      url: '/get_shows',
+      data: { theater_id: theaterId },
+      success: function(data) {
+        try {
+          var showDropdown = $('#show-select');
+          showDropdown.empty();
+          showDropdown.append($('<option>', {
+            value: '',
+            text: 'Select Show'
+          }));
+          $.each(data, function(index, show) {
+            showDropdown.append($('<option>', {
+              value: show.id,
+              text: show.name
+            }));
+          }); 
+        } catch (error) {
+          console.error('Error processing response:', error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX request error:', error);
+      }
+    });
+  });
+});
+</script> %>

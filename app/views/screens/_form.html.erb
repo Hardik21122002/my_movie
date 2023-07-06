@@ -1,0 +1,61 @@
+<div class="Screen">
+<%= form_for @screen do |f| %>
+  <% if @screen.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@screen.errors.count, "error") %> prohibited this screen from being saved:</h2>
+
+      <ul>
+        <% @screen.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %> 
+
+  <div class="field">
+    <%# <%= f.label :theater %> 
+    <%# <%= f.text_field :theater_name, value: @theater.name, readonly: true %> 
+    <%= f.hidden_field :theater_id, value: @theater&.id %><br><br>
+  </div>
+
+  <div class="field">
+    <%= f.label :screen_name %>
+    <%= f.text_field :screen_name %><br><br> 
+  </div>  
+
+  <div id="time-slots-container"></div>
+  
+  <button type="button" id="add-time-slot-btn" >Add Time Slot</button><br><br>
+ 
+  <div class="field">
+    <%= f.label :status %>
+    <%= f.select :status, Screen.statuses.keys ,{prompt: true}%><br><br> 
+  </div>   
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %><br> 
+<%= link_to 'Back to Screens', screens_path %>
+</div> 
+
+
+<script>
+  var index = <%= @screen.slots.size %>;
+  var container = document.getElementById('time-slots-container');
+  var addButton = document.getElementById('add-time-slot-btn');
+
+  addButton.addEventListener('click', function () {
+    index++;
+
+    var slotFields = document.createElement('div');
+    slotFields.className = 'field';
+    slotFields.innerHTML =
+      '<label>Start Time</label>' +
+      '<input type="time" name="screen[slots_attributes][' + index + '][start_time]" class="time-slot-input">' +
+      '<label>End Time</label>' +
+      '<input type="time" name="screen[slots_attributes][' + index + '][end_time]" class="time-slot-input">';
+
+    container.appendChild(slotFields);
+  });
+</script>

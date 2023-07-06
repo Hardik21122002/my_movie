@@ -1,0 +1,10 @@
+ <h1>Review Details</h1> 
+<div class="review-form">
+
+<p><strong>Show Name:</strong><%= @review.show.name %></p> 
+<p><strong>Rating:</strong> <%= @review.rating %></p> 
+<p><strong>Theater Name:</strong><%= @review.theater.name %></p> 
+<p><strong>Feedback:</strong> <%= @review.feedback %></p>
+<p><strong>User Email:</strong> <%= @review.user.email %></p>
+<%= link_to ' Back to Reviews',  reviews_path %> 
+</div>

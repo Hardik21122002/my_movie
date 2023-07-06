@@ -1,0 +1,218 @@
+<h1><%= @theater.name %> Theater</h1> 
+
+<h2>Screens</h2>
+
+<table> 
+  <thead>
+    <tr>
+      <th>Screen Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @theater_screen.each do |screen| %>
+      <tr>
+        <td><%= link_to screen.screen_name, screen %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table><br> 
+
+
+
+<h2>Shows</h2>
+
+<table> 
+  <thead>
+    <tr>
+      <th>Screen Name</th> 
+      <th>Show Name</th> 
+      <th>Total Seats</th>  
+      <th>Remaining Seats</th> 
+      <th>Duration</th>  
+      <th>Start Date</th> 
+      <th>Time</th>
+      <th>Recurring</th>    
+      <th>End Date</th> 
+    </tr>
+  </thead>
+  <tbody>
+    <% @shows.each do |show| %>
+      <tr>
+        <td><%= show.screen.screen_name %></td>
+        <td><%= show.name %></td>   
+        <td><%= show.total_seats %></td>  
+        <td><%= show.remaining_seats %></td> 
+        <td><%= show.duration.strftime("%H:%M") %></td>   
+        <td><%= show.start_date %></td>  
+        <td>
+          <% show.show_times.each do |show_time| %>
+            <%= show_time.time&.strftime("%I:%M %p")%><br>
+          <% end %>
+        </td>
+        <td><%= show.recurring %></td>  
+        <td><%= show.end_date %></td> 
+      </tr>
+    <% end %>
+  </tbody>
+</table><br>
+
+
+<h2>Reviews</h2>
+
+<table> 
+  <thead>
+    <tr>
+      <th>Show Name</th> 
+      <th>Rating</th>  
+      <th>Feedback</th>   
+      <th>User Email</th>  
+    </tr>
+  </thead>
+  <tbody> 
+    <% @reviews.each do |review| %>
+      <tr> 
+        <td><%= review.show.name %></td> 
+        <td><%= review.rating%></td> 
+        <td><%= review.feedback%></td>
+        <td><%= review.user.email %></td>      
+      </tr>
+    <% end %>
+  </tbody>
+</table> <br>
+
+
+<div class="chart-container">
+<div class="booking-chart">
+  <h2>Total Bookings by Show for Current Week</h2>
+  <canvas id="booking-chart" style="position: relative;"></canvas>
+</div><br>
+
+<div class="bookings-chart">
+  <h2>Total Bookings by Week and Month</h2>
+  <canvas id="bookings-chart" style="position: relative;"></canvas>
+</div><br>
+
+<div class="popular-show-chart">
+  <h2>Most Popular Show based on Bookings</h2>
+  <canvas id="popular-show-chart" style="position: relative;"></canvas> 
+</div> 
+</div>
+
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Bar chart for total bookings by screen
+    var showNames = <%= raw @names.to_json %>;
+    var totalBookings = <%= raw @total_bookings.to_json %>;
+
+    var ctx1 = document.getElementById("booking-chart").getContext("2d"); 
+    var bookingChart = new Chart(ctx1, {
+      type: "bar",
+      data: {
+        labels: showNames,
+        datasets: [{
+          label: "Total Bookings",
+          data: totalBookings,
+          backgroundColor: "rgba(75, 192, 192, 0.5)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: {  
+        responsive: false, 
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+
+    // Line chart for total bookings by week and month
+    var bookingsByWeek = <%= raw @bookings_by_week.to_json %>;
+    var bookingsByMonth = <%= raw @bookings_by_month.to_json %>; 
+
+    var ctx2 = document.getElementById("bookings-chart").getContext("2d");
+
+    var weekLabels = Object.keys(bookingsByWeek);
+    var monthLabels = Object.keys(bookingsByMonth);
+
+    var combinedLabels = weekLabels.map(function(date, index) {
+      return date + " // "+ "\n"+ monthLabels[index];
+    });
+
+    var datasets = [{
+      label: "Bookings by Week",
+      data: Object.values(bookingsByWeek),
+      backgroundColor: "rgba(75, 192, 192, 0.2)",
+      borderColor: "rgba(75, 192, 192, 1)",
+      borderWidth: 1
+    }];
+
+    if (monthLabels.length > 0) {
+      datasets.push({
+        label: "Bookings by Month",
+        data: Object.values(bookingsByMonth),
+        backgroundColor: "rgba(192, 75, 192, 0.2)",
+        borderColor: "rgba(192, 75, 192, 1)",
+        borderWidth: 1
+      });
+    }
+
+    var bookingsChart = new Chart(ctx2, {
+      type: "line",
+      data: {
+        labels: combinedLabels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+
+    // Pie chart for most popular show based on bookings
+    
+    var popularShowData = <%= raw @popular_show_data.to_json %>;
+
+    var ctx3 = document.getElementById("popular-show-chart").getContext("2d");
+    var popularShowChart = new Chart(ctx3, {
+      type: "pie",
+      data: {
+        labels: Object.keys(popularShowData),
+        datasets: [{
+          data: Object.values(popularShowData),
+          backgroundColor: [
+            "rgba(75, 192, 192, 0.5)",
+            "rgba(192, 75, 192, 0.5)",
+            "rgba(192, 192, 75, 0.5)",  
+            "rgba(75, 75, 192, 0.5)",
+            "rgba(192, 75, 75, 0.5)",
+          ],
+          borderColor: "rgba(255, 255, 255, 1)",
+          borderWidth: 1, 
+        }]
+      }, 
+      options: {
+        responsive: false 
+      }
+    });
+  });
+</script>
+
+

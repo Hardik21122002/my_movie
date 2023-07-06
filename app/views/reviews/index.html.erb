@@ -1,0 +1,35 @@
+<h1>Reviews</h1>
+
+<table> 
+  <thead>
+    <tr> 
+      <th>Theater Name</th> 
+      <th>Show Name</th> 
+      <th>Rating</th>   
+      <th>Feedback</th>    
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reviews.each do |review| %>
+      <tr>  
+        <td><%= review.theater.name %></td> 
+        <td><%= review.show.name %></td> 
+        <td><%= review.rating%></td> 
+        <td><%= review.feedback%></td>
+        <td><%= link_to  review do%> 
+        <i class='bx bx-edit-alt text-info'></i> 
+        <% end %>  
+        </td>    
+        <td><%= link_to  review, method: :delete, data: { confirm: 'Are you sure?' } do%> 
+        <i class='bx bx-message-alt-x text-primary' ></i>  
+        <% end %> 
+        </td>      
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+
+

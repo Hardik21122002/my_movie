@@ -1,0 +1,211 @@
+<div class="BookingInfo">
+<%= form_for @booking_info do |f| %> 
+  <% if @booking_info.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@booking_info.errors.count, "error") %> prohibited this booking_info from being saved:</h2>
+
+      <ul>
+        <% @booking_info.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+  <%= f.label :theater %>
+  <%= f.collection_select :theater_id, Theater.all, :id, :name, { prompt: true }, { id: 'theater-select' } %><br><br> 
+  
+  </div> 
+
+  <div class="field">
+  <%= f.label :screen %>
+  <%= f.collection_select :screen_id, Screen.all, :id, :screen_name, { prompt: true , disabled: true}, { id: 'screen-select' } %><br><br> 
+  </div> 
+
+
+  <div class="field">
+    <%= f.label :show %>
+    <%= f.collection_select :show_id, Show.all, :id, :name, { prompt: true , disabled: true}, { id: 'show-select' }%><br><br>
+  </div> 
+
+  <div class="field">
+    <%= f.label :booking_date %> 
+    <%= f.collection_select :booking_date, Show.all ,:id, :start_date, { prompt: true, disabled: true }, { id: 'booking-date-select' } %> <br><br>
+  </div>
+
+  <div class="field">
+    <%= f.label :booking_time %>
+    <%= f.collection_select :booking_time, ShowTime.all, :id, :time, { prompt: true}, { id: 'booking-time-select' } %><br><br> 
+  </div> 
+
+  <div class="field">
+    <%= f.label :Number_of_Tickets_you_want_to_book %> 
+    <%= f.number_field :no_of_tickets ,min: 1%> 
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %> <br>
+
+<%= link_to 'Back to BookingInfos', booking_infos_path %>
+
+</div>
+
+<script>
+$(document).ready(function() { 
+  // Disable screen, show, booking date, and booking time dropdowns initially
+  $('#screen-select').prop('disabled', true);
+  $('#show-select').prop('disabled', true);
+  $('#booking-date-select').prop('disabled', true);
+  $('#booking-time-select').prop('disabled', true);
+
+  $('#theater-select').on('change', function() {
+    var theaterId = $(this).val();
+    console.log("selected-theater", theaterId);
+    $.ajax({
+      url: '/theater_screens',
+      data: { theater_id: theaterId },
+      success: function(data) {
+        try {
+          var screenDropdown = $('#screen-select');
+          screenDropdown.empty();
+          screenDropdown.append($('<option>', {
+            value: '',
+            text: 'Select screen' 
+          }));
+          $.each(data, function(index, screen) {
+            screenDropdown.append($('<option>', {
+              value: screen.id,
+              text: screen.screen_name
+            }));
+          }); 
+          screenDropdown.prop('disabled', false);
+          $('#show-select').prop('disabled', true);
+          $('#booking-date-select').prop('disabled', true);
+          $('#booking-time-select').prop('disabled', true);
+        } catch (error) {
+          console.error('Error processing response:', error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX request error:', error);
+      }
+    });
+  });
+
+  $('#screen-select').on('change', function() {
+    var screenId = $(this).val();
+    console.log("selected-screen", screenId);
+    $.ajax({
+      url: '/screens_shows',
+      data: { screen_id: screenId },
+      success: function(data) {
+        try {
+          var showDropdown = $('#show-select');
+          showDropdown.empty();
+          showDropdown.append($('<option>', {
+            value: '',
+            text: 'Select show'
+          }));
+          $.each(data, function(index, show) {
+            showDropdown.append($('<option>', {
+              value: show.id,
+              text: show.name
+            }));
+          }); 
+          showDropdown.prop('disabled', false);
+          $('#booking-date-select').prop('disabled', true);
+          $('#booking-time-select').prop('disabled', true);
+        } catch (error) {
+          console.error('Error processing response:', error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX request error:', error);
+      }
+    });
+  });
+
+  $('#show-select').on('change', function() {
+    var showId = $(this).val();
+    console.log("selected-show", showId);
+    $.ajax({
+      url: '/shows_booking_dates',
+      data: { show_id: showId },
+      success: function(data) {
+        try {
+          var bookingDateDropdown = $('#booking-date-select');
+          bookingDateDropdown.empty();
+          bookingDateDropdown.append($('<option>', {
+            value: '',
+            text: 'Select booking date'
+          }));
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0');
+          var yyyy = today.getFullYear();
+          var todayDate = yyyy + '-' + mm + '-' + dd;
+          $.each(data, function(index, bookingDate) {
+            var startDate = bookingDate.start_date;
+            if (startDate >= todayDate) {
+              bookingDateDropdown.append($('<option>', {
+                value: startDate,
+                text: startDate
+              }));
+            }
+          });
+          bookingDateDropdown.prop('disabled', false);
+          $('#booking-time-select').prop('disabled', true);
+        } catch (error) {
+          console.error('Error processing response:', error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX request error:', error);
+      }
+    });
+  });
+ 
+  $('#booking-date-select').on('change', function() {
+    var bookingDate = $(this).val();
+    var showId = $('#show-select').val();
+
+    console.log("selected-booking-date", bookingDate);
+
+    $.ajax({
+      url: '/booking_dates_times',
+      data: { booking_date: bookingDate, show_id: showId },
+      success: function(data) {
+        var bookingTimes = data.booking_times;
+        console.log("value of booking", bookingTimes);
+        try {
+          var bookingTimeDropdown = $('#booking-time-select');
+          bookingTimeDropdown.empty();
+          bookingTimeDropdown.append($('<option>', {
+            value: '',
+            text: 'Select booking time'
+          }));
+          $.each(bookingTimes, function(index, bookingTime) {
+            bookingTimeDropdown.append($('<option>', {
+              value: bookingTime,
+              text: bookingTime
+            }));
+          });
+          bookingTimeDropdown.prop('disabled', false);
+        } catch (error) {
+          console.error('Error processing response:', error);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX request error:', error);
+      }
+    });
+  });
+});
+</script> 
+ 
+
+
+
