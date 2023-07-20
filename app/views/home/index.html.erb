@@ -24,8 +24,12 @@
             <td><%= show.name %></td> 
             <td><%= show.screen.screen_name %></td>   
             <td><%= show.theater.name %></td>  
-            <td><%= show.total_seats %></td>  
-            <td><%= show.remaining_seats %></td> 
+            <td><%= show.screen.total_seats%></td>
+            <td>
+              <% show.show_times.each do |show_time| %>
+                <%= show_time.remaining_seats%><br>
+              <% end %>
+            </td>
             <td><%= show.duration.strftime("%H:%M") %></td>  
             <td><%= show.start_date %></td>  
             <td>

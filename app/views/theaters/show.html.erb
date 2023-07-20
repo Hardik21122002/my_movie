@@ -17,8 +17,6 @@
   </tbody>
 </table><br> 
 
-
-
 <h2>Shows</h2>
 
 <table> 
@@ -26,8 +24,6 @@
     <tr>
       <th>Screen Name</th> 
       <th>Show Name</th> 
-      <th>Total Seats</th>  
-      <th>Remaining Seats</th> 
       <th>Duration</th>  
       <th>Start Date</th> 
       <th>Time</th>
@@ -40,8 +36,6 @@
       <tr>
         <td><%= show.screen.screen_name %></td>
         <td><%= show.name %></td>   
-        <td><%= show.total_seats %></td>  
-        <td><%= show.remaining_seats %></td> 
         <td><%= show.duration.strftime("%H:%M") %></td>   
         <td><%= show.start_date %></td>  
         <td>
@@ -55,7 +49,6 @@
     <% end %>
   </tbody>
 </table><br>
-
 
 <h2>Reviews</h2>
 
@@ -78,8 +71,14 @@
       </tr>
     <% end %>
   </tbody>
-</table> <br>
+</table> <br> 
 
+<div class="chart">
+  <select id="chart-select">
+    <option value="bookingsByWeek" selected >Bookings by Week</option>
+    <option value="bookingsByMonth">Bookings by Month</option>
+  </select>  
+</div>
 
 <div class="chart-container">
 <div class="booking-chart">
@@ -87,9 +86,14 @@
   <canvas id="booking-chart" style="position: relative;"></canvas>
 </div><br>
 
-<div class="bookings-chart">
-  <h2>Total Bookings by Week and Month</h2>
-  <canvas id="bookings-chart" style="position: relative;"></canvas>
+<div class="bookings-chart-week" >
+  <h2>Total Bookings by Week</h2>
+  <canvas id="bookings-chart" style="position: relative;"></canvas> 
+</div><br> 
+
+<div class="bookings-chart-month"> 
+  <h2>Total Bookings by Month</h2>
+  <canvas id="bookings-chart1" style="position: relative;"></canvas> 
 </div><br>
 
 <div class="popular-show-chart">
@@ -100,10 +104,24 @@
 
 
 
-
-
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  $(document).ready(function() {
+    $("#chart-select").change(function() {
+      var selectedValue = $(this).val();
+
+      $(".chart-container > div").hide();
+
+      if (selectedValue === "bookingsByWeek") {
+        $(".booking-chart, .bookings-chart-week, .popular-show-chart").show();
+      }
+      else if (selectedValue === "bookingsByMonth") {
+        $(".booking-chart, .bookings-chart-month, .popular-show-chart").show();
+      }
+    }).trigger("change"); 
+  }); 
+</script> 
+<script>
+  $(document).ready(function() {
     // Bar chart for total bookings by screen
     var showNames = <%= raw @names.to_json %>;
     var totalBookings = <%= raw @total_bookings.to_json %>;
@@ -135,18 +153,12 @@
       }
     });
 
-    // Line chart for total bookings by week and month
-    var bookingsByWeek = <%= raw @bookings_by_week.to_json %>;
-    var bookingsByMonth = <%= raw @bookings_by_month.to_json %>; 
-
-    var ctx2 = document.getElementById("bookings-chart").getContext("2d");
-
+    // Line chart for total bookings by week 
+    
+    var bookingsByWeek = <%= raw @bookings_by_week.to_json %>; 
     var weekLabels = Object.keys(bookingsByWeek);
-    var monthLabels = Object.keys(bookingsByMonth);
-
-    var combinedLabels = weekLabels.map(function(date, index) {
-      return date + " // "+ "\n"+ monthLabels[index];
-    });
+    var ctx2 = document.getElementById("bookings-chart").getContext("2d");
+    
 
     var datasets = [{
       label: "Bookings by Week",
@@ -156,21 +168,17 @@
       borderWidth: 1
     }];
 
-    if (monthLabels.length > 0) {
-      datasets.push({
-        label: "Bookings by Month",
-        data: Object.values(bookingsByMonth),
-        backgroundColor: "rgba(192, 75, 192, 0.2)",
-        borderColor: "rgba(192, 75, 192, 1)",
-        borderWidth: 1
-      });
-    }
-
     var bookingsChart = new Chart(ctx2, {
       type: "line",
       data: {
-        labels: combinedLabels,
-        datasets: datasets
+        labels: weekLabels,
+        datasets: [{
+          label: "Bookings by Week",
+          data: Object.values(bookingsByWeek),
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1
+        }]
       },
       options: {
         responsive: true,
@@ -185,6 +193,39 @@
         }
       }
     });
+ 
+    // Line chart for total bookings by month 
+    
+    var bookingsByMonth = <%= raw @bookings_by_month.to_json %>;
+    var monthLabels = Object.keys(bookingsByMonth);
+    var ctx2 = document.getElementById("bookings-chart1").getContext("2d");
+
+    var bookingsChart = new Chart(ctx2, {
+      type: "line",
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: "Bookings by Month",
+          data: Object.values(bookingsByMonth),
+          backgroundColor: "rgba(192, 75, 192, 0.2)",
+          borderColor: "rgba(192, 75, 192, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+
 
     // Pie chart for most popular show based on bookings
     
@@ -211,7 +252,7 @@
       options: {
         responsive: false 
       }
-    });
+    }); 
   });
 </script>
 

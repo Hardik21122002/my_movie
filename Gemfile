@@ -19,7 +19,6 @@ gem 'bootstrap', '~> 5.2.3'
 gem 'whenever' 
 
 
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -66,4 +65,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'gruff' 
 gem 'coffee-rails', '~> 5.0.0' 
-gem 'chosen-rails'
+gem 'chosen-rails' 
+

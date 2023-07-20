@@ -1,7 +1,6 @@
 class ScreenPolicy < ApplicationPolicy
     
   def create?
-    # user.theater_admin? && user.theater_id == record.theater_id 
     user.theater_admin? && user.theaters.exists?(record.theater_id)
   end 
   

@@ -18,7 +18,7 @@
         <td><%= review.rating%></td> 
         <td><%= review.feedback%></td>
         <td><%= link_to  review do%> 
-        <i class='bx bx-edit-alt text-info'></i> 
+        <i class='bx bx-show text-primary' ></i> 
         <% end %>  
         </td>    
         <td><%= link_to  review, method: :delete, data: { confirm: 'Are you sure?' } do%> 

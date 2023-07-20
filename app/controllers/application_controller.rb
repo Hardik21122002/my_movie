@@ -1,11 +1,9 @@
 class ApplicationController < ActionController::Base   
- 
+
   include Pundit::Authorization
 
-    protect_from_forgery with: :exception
+  protect_from_forgery with: :null_session
 
-    protect_from_forgery with: :null_session
-    skip_before_action :verify_authenticity_token
     before_action :authenticate_user!
     skip_before_action :authenticate_user!, if: -> { request.path.start_with?('/admin')  }
   
@@ -16,12 +14,11 @@ class ApplicationController < ActionController::Base
       render json: {}
     end
 
-    private  
-    
+    private   
 
     def user_not_authorized
-      flash[:alert] = "You are not authorized to perform this action."
-      redirect_to theater_path(current_user.theater_ids) 
+      flash[:alert] = "You are not authorized to perform this action." 
+      redirect_to theater_path(session[:current_theater_id])
     end 
 
 end

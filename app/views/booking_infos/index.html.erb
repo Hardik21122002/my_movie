@@ -4,7 +4,6 @@
   <table> 
     <thead>
       <tr>
-        <th>Theater Name</th>
         <th>Screen Name</th>
         <th>Show Name </th>
         <th>Booking Date</th>  
@@ -17,7 +16,6 @@
     <tbody>
       <% @booking_infos1.each do |booking_info| %>
         <tr>
-          <td><%= booking_info.theater.name %></td>
           <td><%= booking_info.screen.screen_name%></td> 
           <td><%= booking_info.show.name %></td> 
           <td><%= booking_info.booking_date %></td>   
@@ -76,7 +74,7 @@
           <td><%= booking_info.user.email %></td>   
           <td>
             <% if booking_info.show.reviews.any? %>
-              <%= link_to booking_info.show.average_rating.ceil,review_path(booking_info.show.reviews.first)%>
+              <%= link_to booking_info.show.average_rating.ceil,review_path(booking_info.show.reviews.first)%> 
             <% else %>
               <%= link_to 'Review', new_review_path(booking_info_id: booking_info.id) %>
             <% end %>

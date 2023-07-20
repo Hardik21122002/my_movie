@@ -4,5 +4,6 @@ class Review < ApplicationRecord
   belongs_to :theater 
 
   validates :rating, presence: true  
-  validates :feedback, presence: true 
+  validates :feedback, presence: true  
+ 
 end

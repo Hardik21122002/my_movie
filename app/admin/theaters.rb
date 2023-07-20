@@ -32,15 +32,12 @@ ActiveAdmin.register Theater do
       f.input :user_ids, as: :select, collection: User.all.map{|x| [x.email, x.id]}, input_html: { id: 'user-ids-select' }
     end  
     
-    f.inputs "Users", id: 'users-fields' do
-      f.has_many :users do |a| 
-        a.input :email
-        # a.input :role, as: :select, collection: User.roles.keys  
-        a.input :role, as: :string, input_html: {value: "theater_admin", readonly: true}  
-        
-      end    
-    end 
-
+    f.has_many :users do |a| 
+      a.input :email
+    # a.input :role, as: :select, collection: User.roles.keys  
+      a.input :role, as: :string, input_html: {value: "theater_admin", readonly: true}  
+    end    
+  
     f.has_many :screens do |c|  
       c.input :screen_name
       c.input :status 

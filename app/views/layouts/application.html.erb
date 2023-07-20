@@ -16,7 +16,9 @@
     
     <%= javascript_include_tag 'theater' %>  
 
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
+    <%= stylesheet_link_tag 'show.css' %>
+ 
   </head>
 
   <body>   
@@ -28,8 +30,7 @@
         <%= render 'shared/header_user' unless @disable_nav %>  
       <% end %>   
     <% end %> 
-    
-    
+     
     <p class="notice"><%= notice %></p> 
     <p class="alert"><%= alert %></p>  
     <%= yield %> 

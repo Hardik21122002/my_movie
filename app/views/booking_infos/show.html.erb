@@ -5,7 +5,8 @@
 <p><strong>Screen Name:</strong> <%= @booking_info.screen.screen_name %></p> 
 <p><strong>Show Name:</strong><%= @booking_info.show.name %></p>
 <p><strong>Booking Date:</strong> <%= @booking_info.booking_date %></p>   
-<p><strong>Booking Time:</strong> <%= @booking_info.booking_time %></p>  
+<p><strong>Booking Time:</strong> <%= @booking_info.booking_time.strftime("%I:%M %p") %></p>   
+<p><strong>Booking Ticket:</strong> <%= @booking_info.no_of_tickets %></p> 
 <p><strong>User Email:</strong> <%= @booking_info.user.email %></p>
 <%= link_to 'Back to BookingInfos', booking_infos_path %>
 </div>

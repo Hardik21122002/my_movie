@@ -1,8 +1,7 @@
 class UserMailer < ApplicationMailer
 
-    def default_password
-        @email = params[:email]
-        mail(to: @email, subject: "Default-Password")
+    def default_password(user)
+        @user = user
+        mail(to: @user.email, subject: "Your Default Password")
     end
-
 end

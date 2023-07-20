@@ -1,12 +1,20 @@
 <h1>Show Details</h1>
 <div class="Show">
-<p><strong>Screen Name:</strong><%= @show.screen.screen_name %></p>
-<p><strong>Show Name:</strong> <%= @show.name %></p> 
-<p><strong>Total Seats:</strong> <%= @show.total_seats %></p> 
-<p><strong>Remaining Seats:</strong> <%= @show.remaining_seats %></p>
+<p><strong>Screen Name:</strong><%= @show.screen.screen_name %></p> 
+<p><strong>Screen Slot:</strong>          
+    <%@show.slots.each do |slot| %>
+        <%= slot.start_time.strftime("%I:%M %p")%>- <%=slot.end_time.strftime("%I:%M %p")%> ,
+    <% end %> 
+</p>
+<p><strong>Show Name:</strong> <%= @show.name %></p>  
 <p><strong>Duration:</strong> <%= @show.duration.strftime("%H:%M") %></p>  
 <p><strong>Recurring:</strong> <%= @show.recurring %></p> 
 <p><strong>Start Date:</strong> <%= @show.start_date %></p> 
-<p><strong>End Date:</strong> <%= @show.end_date %></p>
+<p><strong>End Date:</strong> <%= @show.end_date %></p> 
+<p><strong>Time:</strong> 
+    <%@show.show_times.each do |show_time| %>
+        <%= show_time.time&.strftime("%I:%M %p")%> ,
+    <% end %> 
+</p> 
 <%= link_to 'Back to Shows', shows_path %>
 </div>

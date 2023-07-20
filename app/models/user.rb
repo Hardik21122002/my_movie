@@ -8,18 +8,17 @@ class User < ApplicationRecord
   has_many :theater_users 
   has_many :theaters, through: :theater_users ,dependent: :destroy 
   
-  before_validation :generate_password
+  before_create :generate_password
   after_create :send_password_reset_email 
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable 
 
-
   def generate_password
-    self.password = SecureRandom.hex(8) if self.new_record?
+    self.password ||= SecureRandom.hex(8)
   end
-    
+
   def send_password_reset_email
-    UserMailer.with(email:self.email, user:self).default_password.deliver_now
+    UserMailer.default_password(self).deliver_now
   end
 end

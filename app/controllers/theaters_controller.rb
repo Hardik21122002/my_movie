@@ -2,12 +2,8 @@ class TheatersController < ApplicationController
   before_action :authorize_theater_access, only: [:show] 
   before_action :set_current_theater, only: [:show]
  
-  def index
-    @theaters = Theater.all
-  end
-  
   def show 
-    @theater = Theater.find(params[:id])    
+    @theater = Theater.find_by(id: params[:id])    
     @theaters = current_user.theaters
     @bookings = BookingInfo.where(theater_id: @theater.id, booking_date: Date.today.beginning_of_week..Date.today.end_of_week)
     @bookings_by_show = @bookings.group(:show_id).count 
@@ -27,9 +23,8 @@ class TheatersController < ApplicationController
     end
     @bookings_by_week = BookingInfo.where(theater_id: @theater.id).group_by_week(:booking_date, format: "%d-%m-%Y").count
     @bookings_by_month = BookingInfo.where(theater_id: @theater.id).group_by_month(:booking_date, format: "%b-%Y").count
-     
+        
     @popular_show_data = BookingInfo.joins(:show).where(theater_id: @theater.id).group('shows.name').count
-    @booking_info_theater = @theater.booking_infos  #
   end    
   private 
 

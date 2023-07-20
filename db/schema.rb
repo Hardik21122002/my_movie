@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_063447) do
+ActiveRecord::Schema.define(version: 2023_07_20_132447) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2023_07_03_063447) do
     t.integer "status"
     t.integer "theater_id"
     t.string "screen_name"
+    t.integer "total_seats"
     t.index ["theater_id"], name: "index_screens_on_theater_id"
   end
 
@@ -89,6 +90,7 @@ ActiveRecord::Schema.define(version: 2023_07_03_063447) do
     t.integer "show_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "remaining_seats"
     t.index ["show_id"], name: "index_show_times_on_show_id"
   end
 
@@ -101,17 +103,15 @@ ActiveRecord::Schema.define(version: 2023_07_03_063447) do
     t.date "end_date"
     t.time "duration"
     t.integer "theater_id"
-    t.integer "total_seats"
-    t.integer "remaining_seats"
     t.integer "screen_id"
   end
 
   create_table "slots", force: :cascade do |t|
     t.integer "screen_id", null: false
+    t.time "start_time"
+    t.time "end_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.time "end_time"
-    t.time "start_time"
     t.index ["screen_id"], name: "index_slots_on_screen_id"
   end
 

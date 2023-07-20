@@ -3,8 +3,8 @@
 <table> 
   <thead>
     <tr> 
-      <th>Theater Name</th>
-      <th>Screen Name</th> 
+      <th>Screen Name</th>  
+      <th>Total Seats</th>   
       <th>Status</th>  
       <th>Start Time</th> 
       <th>End Time</th>      
@@ -14,8 +14,8 @@
   <tbody>
     <% @screens.each do |screen| %>
       <tr> 
-        <td><%= screen.theater.name %></td> 
-        <td><%= screen.screen_name %></td>
+        <td><%= screen.screen_name %></td> 
+        <td><%= screen.total_seats%></td> 
         <td><%= screen.status %></td>  
         <td>
           <% screen.slots.each do |slot| %>

@@ -3,6 +3,16 @@
 
 <p><strong>Screen Name:</strong> <%= @screen.screen_name %></p> 
 <p><strong>Theater Name:</strong><%= @screen.theater.name %></p>
-<p><strong>Status:</strong> <%= @screen.status %></p> 
+<p><strong>Status:</strong> <%= @screen.status %></p>  
+<p><strong>Start Time:</strong> 
+    <% @screen.slots.each do |slot| %>
+        <%= slot.start_time&.strftime("%I:%M %p")%> ,
+    <% end %> 
+</p> 
+<p><strong>End Time:</strong>  
+    <% @screen.slots.each do |slot| %>
+       <%= slot.end_time&.strftime("%I:%M %p")%> ,
+    <% end %> 
+</p> 
 <%= link_to 'Back to Screens', screens_path %>
 </div>

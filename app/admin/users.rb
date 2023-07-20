@@ -25,7 +25,7 @@ ActiveAdmin.register User do
     column :role
     column :created_at 
     column :theater_ids do |u|
-      u= Theater.find(u.theater_ids)
+      u.theaters
     end
     actions
   end
@@ -43,3 +43,5 @@ ActiveAdmin.register User do
     f.actions
   end  
 end
+
+

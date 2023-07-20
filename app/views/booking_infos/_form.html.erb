@@ -14,7 +14,7 @@
 
   <div class="field">
   <%= f.label :theater %>
-  <%= f.collection_select :theater_id, Theater.all, :id, :name, { prompt: true }, { id: 'theater-select' } %><br><br> 
+  <%= f.collection_select :theater_id,  f.object.new_record? ? Theater.all : @theaters, :id, :name, { prompt: true }, { id: 'theater-select' } %><br><br> 
   
   </div> 
 

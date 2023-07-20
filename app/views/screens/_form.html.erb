@@ -13,18 +13,34 @@
   <% end %> 
 
   <div class="field">
-    <%# <%= f.label :theater %> 
-    <%# <%= f.text_field :theater_name, value: @theater.name, readonly: true %> 
     <%= f.hidden_field :theater_id, value: @theater&.id %><br><br>
   </div>
 
   <div class="field">
     <%= f.label :screen_name %>
     <%= f.text_field :screen_name %><br><br> 
-  </div>  
+  </div>   
 
-  <div id="time-slots-container"></div>
-  
+  <div class="field">
+    <%= f.label :total_seats %>
+    <%= f.text_field :total_seats%><br><br> 
+  </div> 
+
+  <div id="time-slots-container"> 
+  <% f.object.slots.each do |slot| %>
+    <%= f.fields_for :slots, slot  do |slot_fields| %> 
+      <div class="field time-container"> 
+        <%= slot_fields.label :start_time %>  
+        <%= slot_fields.time_select :start_time%>
+      </div>
+      <div class="field time-container"> 
+        <%= slot_fields.label :end_time %>  
+        <%= slot_fields.time_select :end_time%><br><br>
+      </div>
+    <% end %>
+  <% end %>
+  </div>
+
   <button type="button" id="add-time-slot-btn" >Add Time Slot</button><br><br>
  
   <div class="field">
@@ -38,7 +54,6 @@
 <% end %><br> 
 <%= link_to 'Back to Screens', screens_path %>
 </div> 
-
 
 <script>
   var index = <%= @screen.slots.size %>;
@@ -59,3 +74,4 @@
     container.appendChild(slotFields);
   });
 </script>
+
