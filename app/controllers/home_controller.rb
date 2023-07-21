@@ -9,7 +9,7 @@ class HomeController < ApplicationController
     else
       start_of_week = Date.current.beginning_of_week 
       end_date = Date.current  
-      @shows = Show.where("(start_date <= ? AND end_date >= ?) OR ( start_date = ? AND end_date IS NULL) ",end_date, start_of_week,Date.today)  
+      @shows = Show.where("(start_date <= ? AND end_date >= ?) OR ( start_date = ? AND end_date IS NULL) ",end_date, start_of_week,Date.today)   
     end
   end
   

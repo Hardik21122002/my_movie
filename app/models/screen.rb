@@ -9,13 +9,4 @@ class Screen < ApplicationRecord
   accepts_nested_attributes_for :slots
   validates :screen_name, presence: true  
 
-  # before_save :update_remaining_seats 
-   
-  # private 
-  
-  # def update_remaining_seats
-  #   if total_seats_changed? 
-  #     self.remaining_seats = total_seats
-  #   end
-  # end 
 end

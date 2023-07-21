@@ -1,6 +1,5 @@
 class BookingInfosController < ApplicationController
   before_action :set_booking_info, only: [:show, :edit, :update, :destroy] 
-  # before_action :authenticate_user!, only: [:create]
  
   def index  
     @booking_infos = current_user.booking_infos
@@ -60,8 +59,6 @@ class BookingInfosController < ApplicationController
     booked_tickets = @booking_info.no_of_tickets.to_i
     if @booking_info.save 
      
-      # update_remaining_seats(@booking_info.show, @booking_info.screen, @booking_info.booking_date, booked_tickets)
-     
       BookingInfoMailer.booking_confirmation(@booking_info, current_user).deliver_now
       flash[:success] = "BookingInfo created"      
       redirect_to booking_infos_url
@@ -99,15 +96,6 @@ class BookingInfosController < ApplicationController
   end    
 
   private  
-
-  # def update_remaining_seats(show, screen, date, booked_tickets)
-  #   if show.start_date <= date && date <= (show.end_date || show.start_date)
-  #     if date == Date.current
-  #       screen.remaining_seats -= booked_tickets
-  #       screen.save
-  #     end
-  #   end
-  # end 
    
   def booking_info_params
     params.require(:booking_info).permit(:booking_date, :booking_time,:theater_id, :screen_id, :show_id, :no_of_tickets) 

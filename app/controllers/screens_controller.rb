@@ -23,7 +23,6 @@ class ScreensController < ApplicationController
     @screen.theater_id = params[:screen][:theater_id] 
     authorize @screen
     if @screen.save    
-      byebug
       flash.now[:success] = "Screen created"
       redirect_to screens_path
     else

@@ -16,6 +16,7 @@
  @import "bootstrap-sprockets"; 
  @import "bootstrap"; 
 
+
 #booking-chart{
     height: 100%;
     width: 100%; 
@@ -148,7 +149,8 @@
     padding: 20px;  
     margin: 0 auto;   
     background-color: #f5f5f5;   
-    margin-bottom: 50px;
+    margin-bottom: 50px; 
+    /* min-height: 77vh; */
    
 }
  
@@ -188,8 +190,8 @@ h1 {
     text-align: center; 
     background-color: #e3f2fd;  
     width: 100%;   
-    position:fixed;
-    bottom: 0;
+    position:relative;
+    margin-bottom: 0px;
 
 } 
  
